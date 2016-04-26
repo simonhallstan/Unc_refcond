@@ -39,7 +39,7 @@ valid.streams<-setdiff(reference.streams,calib.streams)
 
 
 
-#----------------
+#-----------------
 
 #environmental variables
 env.calib             <-env.all[references,]
