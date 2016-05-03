@@ -1,6 +1,6 @@
 #read all files 
 
-setwd("C:/Users/simonh/OneDrive/SLU/WATERSv2/delprojekt/20160405 Uncertainty in establishment of ref cond/Unc_refmods")
+setwd("C:/Users/simonh/OneDrive/SLU/WATERSv2/delprojekt/20160405 Uncertainty in establishment of ref cond/Unc_refcond")
 
 taxa.lakes<-read.table("data/inv_lakes.txt", sep="\t", dec=",", header=T, row.names=1, encoding="UTF-8")
 taxa.streams<-read.table("data/inv_streams.txt", sep="\t", dec=",", header=T, row.names=1, encoding="UTF-8")
@@ -11,18 +11,22 @@ env.streams<-read.table("data/env_streams.txt", sep="\t", dec=",", header=T, row
 status.lakes<-read.table("data/status_lakes.txt", sep="\t", dec=",", header=T, row.names=1, encoding="UTF-8")
 status.streams<-read.table("data/status_streams.txt", sep="\t", dec=",", header=T, row.names=1, encoding="UTF-8")
 
-types.lakes<-read.table("data/types_lakes.txt", sep="\t", dec=",", header=T, row.names=1, encoding="UTF-8")
-types.streams<-read.table("data/types_streams.txt", sep="\t", dec=",", header=T, row.names=1, encoding="UTF-8")
+types_SystemA.lakes<-read.table("data/types_SystemA_lakes.txt", sep="\t", dec=",", header=T, row.names=1, encoding="UTF-8")
+types_SystemA.streams<-read.table("data/types_SystemA_streams.txt", sep="\t", dec=",", header=T, row.names=1, encoding="UTF-8")
 
+types_Drakare.lakes<-read.table("data/types_Drakare_lakes.txt", sep="\t", dec=",", header=T, row.names=1, encoding="UTF-8")
+types_Drakare.streams<-read.table("data/types_Drakare_streams.txt", sep="\t", dec=",", header=T, row.names=1, encoding="UTF-8")
 
 #check that the rownames are the same for all three files
 summary(rownames(taxa.lakes)==rownames(env.lakes))
 summary(rownames(env.lakes)==rownames(status.lakes))
-summary(rownames(status.lakes)==rownames(types.lakes))
+summary(rownames(status.lakes)==rownames(types_SystemA.lakes))
+summary(rownames(types_SystemA.lakes)==rownames(types_Drakare.lakes))
+
 summary(rownames(taxa.streams)==rownames(env.streams))
 summary(rownames(env.streams)==rownames(status.streams))
-summary(rownames(status.streams)==rownames(types.streams))
-
+summary(rownames(status.streams)==rownames(types_SystemA.streams))
+summary(rownames(types_Drakare.streams)==rownames(types_SystemA.streams))
 
 #create subsets with only calibration sites
 #convert invertebrate matrix to presence-absence
@@ -41,21 +45,25 @@ valid.streams<-setdiff(reference.streams,calib.streams)
 
 #-----------------
 
+
+
 #environmental variables
-env.calib             <-env.all[references,]
+#env.calib             <-env.all[references,]
+#types.cal<-types[calib,,drop=F]
 
-
-types.cal<-types[calib,,drop=F]
 
 #biology
-taxa.pa<-taxa.all;taxa.pa[taxa.all>0]<-1
+#convert to present-absence
+#and define "reference-taxa" as those present in 3-all-3 calibration lakes
+taxa.lakes.pa<-taxa.lakes;taxa.lakes.pa[taxa.lakes>0]<-1
+taxa.streams.pa<-taxa.streams;taxa.streams.pa[taxa.streams>0]<-1
 
-taxa.ref<-taxa.pa[references,]
-taxa.ref<-taxa.ref[,colSums(taxa.ref)>3 & colSums(taxa.ref)<(nrow(taxa.ref)-3)] #remove rare and common taxa
+reference_taxa.lakes<-colnames(taxa.lakes)[colSums(taxa.lakes.pa[calib.lakes,])>3 & colSums(taxa.lakes.pa[calib.lakes,])<(length(calib.lakes)-3)]
+reference_taxa.streams<-colnames(taxa.streams)[colSums(taxa.streams.pa[calib.streams,])>3 & colSums(taxa.streams.pa[calib.streams,])<(length(calib.streams)-3)]
 
-taxa.cal<-taxa.pa[calib,]
-taxa.cal<-taxa.cal[,colSums(taxa.cal)>3 & colSums(taxa.cal)<(nrow(taxa.cal)-3)] #remove rare and common taxa
 
-taxa.all.seltaxa<-taxa.pa[,colnames(taxa.cal)]
 
-index.cal<-index.all[calib,]
+#write.table(calib.lakes, "results/calib.lakes.txt", sep="\t", dec=",", col.names=NA)
+
+
+
