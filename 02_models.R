@@ -247,17 +247,21 @@ for(site in rownames(taxa.streams.pa))
 write.table(predicted_probs.streams.Drakare_typology, "results/predicted_probs.streams.Drakare_typology.txt", sep="\t", dec=",", col.names=NA)
 
 
-#------------------------------------------------------------------------------------------------------------------------
+
+# Null model _______________________________________________________________________________________________________________________________
+
+# Lakes  ----------------------------------  ----------------------------------  ----------------------------------  
+predicted_probs.lakes.null<-t(replicate(nrow(taxa.lakes.pa), (colSums(taxa.lakes.pa[calib.lakes,reference_taxa.lakes])/length(calib.lakes))))
+rownames(predicted_probs.lakes.null)<-rownames(taxa.lakes.pa)
+write.table(predicted_probs.lakes.null, "results/predicted_probs.lakes.null.txt", sep="\t", dec=",", col.names=NA)
 
 
-####################################################################################
-# Modellering - null model
-####################################################################################
-predicted_probs.null<-matrix(data = NA, nrow = nrow(taxa.all.seltaxa), ncol = ncol(taxa.all.seltaxa))
-rownames(predicted_probs.null)<-rownames(taxa.all.seltaxa)
+# Streams  ----------------------------------  ----------------------------------  ----------------------------------  
+predicted_probs.streams.null<-t(replicate(nrow(taxa.streams.pa), (colSums(taxa.streams.pa[calib.streams,reference_taxa.streams])/length(calib.streams))))
+rownames(predicted_probs.streams.null)<-rownames(taxa.streams.pa)
+write.table(predicted_probs.streams.null, "results/predicted_probs.streams.null.txt", sep="\t", dec=",", col.names=NA)
 
-predicted_probs.null<-t(replicate(nrow(predicted_probs.null), (colSums(taxa.cal)/nrow(taxa.cal))))
-rownames(predicted_probs.null)<-rownames(taxa.all.seltaxa)
+
 
 
 #Save probabilties
