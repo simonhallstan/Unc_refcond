@@ -41,6 +41,19 @@ calib.streams<-sample(reference.streams,58)
 valid.lakes<-setdiff(reference.lakes,calib.lakes)
 valid.streams<-setdiff(reference.streams,calib.streams)
 
+imapact.lakes<-setdiff(rownames(taxa.lakes),reference.lakes)
+imapact.streams<-setdiff(rownames(taxa.streams),reference.streams)
+
+
+status.lakes<-rbind(cbind(calib.lakes,rep( "calib",length(calib.lakes))),cbind(valid.lakes,rep( "valid",length(valid.lakes))),cbind(imapact.lakes,rep( "impacted",length(imapact.lakes))))
+status.streams<-rbind(cbind(calib.streams,rep( "calib",length(calib.streams))),cbind(valid.streams,rep( "valid",length(valid.streams))),cbind(imapact.streams,rep( "impacted",length(imapact.streams))))
+
+colnames(status.lakes)<-c("sjoid","status")
+colnames(status.streams)<-c("vdrid","status")
+
+
+write.table(status.lakes, "results/status.lakes.txt", sep="\t", dec=",", col.names=NA)
+write.table(status.streams, "results/status.streams.txt", sep="\t", dec=",", col.names=NA)
 
 
 #-----------------
@@ -63,7 +76,6 @@ reference_taxa.streams<-colnames(taxa.streams)[colSums(taxa.streams.pa[calib.str
 
 
 
-#write.table(calib.lakes, "results/calib.lakes.txt", sep="\t", dec=",", col.names=NA)
 
 
 

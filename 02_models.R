@@ -261,15 +261,3 @@ predicted_probs.streams.null<-t(replicate(nrow(taxa.streams.pa), (colSums(taxa.s
 rownames(predicted_probs.streams.null)<-rownames(taxa.streams.pa)
 write.table(predicted_probs.streams.null, "results/predicted_probs.streams.null.txt", sep="\t", dec=",", col.names=NA)
 
-
-
-
-#Save probabilties
-
-for(pset in predcitorsets) write.table(get(paste('predicted_probs.rf.', pset, sep='')), paste('results/predicted_probs.rf.', pset, '.txt', sep=''), sep="\t", dec=",", col.names=NA)
-write.table(predicted_probs.types, "results/predicted_probs.types.txt", sep="\t", dec=",", col.names=NA)
-write.table(predicted_probs.null, "results/predicted_probs.null.txt", sep="\t", dec=",", col.names=NA)
-
-#save varimp
-write.table(varimp.rivpacs, "results/varimp.rivpacs.txt", sep="\t", dec=",", col.names=NA)
-
