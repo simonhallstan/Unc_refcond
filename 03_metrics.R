@@ -13,9 +13,8 @@ BC<-function(obs, pred){sum(abs(obs-pred))/ (sum(obs+pred))}
 
 
 
-# AUC per taxon _______________________________________________________________________________________________________________________________
+# Lakes - AUC per taxon ---------------------------------------------------
 
-# Lakes  ----------------------------------  ----------------------------------  ----------------------------------  
 models<-c("lakes.all", "lakes.systemA_model", "lakes.Drakare_model", "lakes.systemA_typology","lakes.Drakare_typology", "lakes.null")
 
 AUC_taxa.lakes<-matrix(data = NA, ncol = length(models), nrow = length(reference_taxa.lakes))
@@ -33,7 +32,9 @@ for(model in models)
   }}
 write.table(AUC_taxa.lakes, "results/AUC_taxa.lakes.txt", sep="\t", dec=",", col.names=NA)
 
-# Streams  ----------------------------------  ----------------------------------  ----------------------------------  
+
+# Streams - AUC per taxon -------------------------------------------------
+
 models<-c("streams.all", "streams.systemA_model", "streams.Drakare_model", "streams.systemA_typology","streams.Drakare_typology", "streams.null")
 
 AUC_taxa.streams<-matrix(data = NA, ncol = length(models), nrow = length(reference_taxa.streams))
@@ -53,9 +54,8 @@ for(model in models)
 write.table(AUC_taxa.streams, "results/AUC_taxa.streams.txt", sep="\t", dec=",", col.names=NA)
 
 
-# index and metrics per site _______________________________________________________________________________________________________________________________
+# Lakes - metrics per site ------------------------------------------------
 
-# Lakes  ----------------------------------  ----------------------------------  ----------------------------------  
 models<-c("lakes.all", "lakes.systemA_model", "lakes.Drakare_model", "lakes.systemA_typology","lakes.Drakare_typology", "lakes.null")
 
 metrics_lakes<-array(data = NA, dim=c(nrow(taxa.lakes.pa), 6,5), dimnames=list(rownames(taxa.lakes.pa),models, c('OE00', 'OE25', 'OE50', 'BC', 'AUC')))
@@ -82,7 +82,8 @@ for(model in models)
 for(metric in c('OE00', 'OE25', 'OE50', 'BC', 'AUC'))   write.table(metrics_lakes[,,metric], paste("results/metrics_lakes_", metric, ".txt", sep=''), sep="\t", dec=",", col.names=NA)
 
 
-# streams  ----------------------------------  ----------------------------------  ----------------------------------  
+# Streams - metric per site -----------------------------------------------
+
 models<-c("streams.all", "streams.systemA_model", "streams.Drakare_model", "streams.systemA_typology","streams.Drakare_typology", "streams.null")
 
 metrics_streams<-array(data = NA, dim=c(nrow(taxa.streams.pa), 6,5), dimnames=list(rownames(taxa.streams.pa),models, c('OE00', 'OE25', 'OE50', 'BC', 'AUC')))
@@ -108,6 +109,9 @@ for(model in models)
 
 for(metric in c('OE00', 'OE25', 'OE50', 'BC', 'AUC'))   write.table(metrics_streams[,,metric], paste("results/metrics_streams_", metric, ".txt", sep=''), sep="\t", dec=",", col.names=NA)
 
+
+# Save workspace ----------------------------------------------------------
+save.image("results/workspace.RData")
 
 
 

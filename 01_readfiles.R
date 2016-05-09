@@ -59,15 +59,8 @@ write.table(status.streams, "results/status.streams.txt", sep="\t", dec=",", col
 #-----------------
 
 
-
-#environmental variables
-#env.calib             <-env.all[references,]
-#types.cal<-types[calib,,drop=F]
-
-
-#biology
 #convert to present-absence
-#and define "reference-taxa" as those present in 3-all-3 calibration lakes
+#and define "reference-taxa" as those present in 3-(all-3) calibration lakes
 taxa.lakes.pa<-taxa.lakes;taxa.lakes.pa[taxa.lakes>0]<-1
 taxa.streams.pa<-taxa.streams;taxa.streams.pa[taxa.streams>0]<-1
 

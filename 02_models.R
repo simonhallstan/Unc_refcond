@@ -5,12 +5,8 @@ require(randomForest)
 require(PresenceAbsence)
 
 
-# Models _______________________________________________________________________________________________________________________________
+# Model 1 - Lakes all predictors ------------------------------------------
 
-# Lakes  ----------------------------------  ----------------------------------  ----------------------------------  
-
-
-# Model 1 - Lakes all predictors
 #Empty matrix for probabilties and variable importance
 predicted_probs.lakes.all<-matrix(data = NA, nrow = nrow(taxa.lakes), ncol = length(reference_taxa.lakes))
 colnames(predicted_probs.lakes.all)<-reference_taxa.lakes;rownames(predicted_probs.lakes.all)<-rownames(taxa.lakes)
@@ -33,7 +29,8 @@ write.table(predicted_probs.lakes.all, "results/predicted_probs.lakes.all.txt", 
 write.table(varimp.lakes.all, "results/varimp.lakes.all.txt", sep="\t", dec=",", col.names=NA)
 
 
-# Model 2 - Lakes systemA
+# Model#2 lakes sysA ------------------------------------------------------
+
 preds<-c("Illies.ecoregion", "altitude","mean.depth..pred.or.observed.", "lake.area","Alk_Acid","Abs..filtered.")
 
 
@@ -59,7 +56,10 @@ for(taxon in reference_taxa.lakes)
 write.table(predicted_probs.lakes.systemA_model, "results/predicted_probs.lakes.systemA.txt", sep="\t", dec=",", col.names=NA)
 write.table(varimp.lakes.systemA_model, "results/varimp.lakes.systemA.txt", sep="\t", dec=",", col.names=NA)
 
-# Model 3 - Lakes Drakare
+
+# Model#3 Lakes Drakare ---------------------------------------------------
+
+
 preds<-c("LN", "altitude","mean.depth..pred.or.observed.", "Alk_Acid","Abs..filtered.")
 
 
@@ -85,10 +85,12 @@ write.table(predicted_probs.lakes.Drakare_model, "results/predicted_probs.lakes.
 write.table(varimp.lakes.Drakare_model, "results/varimp.lakes.Drakare_model.txt", sep="\t", dec=",", col.names=NA)
 
 
-# Streams  ----------------------------------  ----------------------------------  ----------------------------------  
+# Streams ---------------------------------------------------
 
 
-# Model 1 - streams all predictors
+# Model#3 Streams all predictors ---------------------------------------------------
+
+
 #Empty matrix for probabilties and variable importance
 predicted_probs.streams.all<-matrix(data = NA, nrow = nrow(taxa.streams), ncol = length(reference_taxa.streams))
 colnames(predicted_probs.streams.all)<-reference_taxa.streams;rownames(predicted_probs.streams.all)<-rownames(taxa.streams)
@@ -111,7 +113,8 @@ write.table(predicted_probs.streams.all, "results/predicted_probs.streams.all.tx
 write.table(varimp.streams.all, "results/varimp.streams.all.txt", sep="\t", dec=",", col.names=NA)
 
 
-# Model 2 - streams systemA
+# Model#4 Streams SysA ---------------------------------------------------
+
 preds<-c("Illies.ecoreg", "altitude", "catch_area.m2.", "Alk_Acid","Abs_F")
 
 
@@ -137,7 +140,8 @@ for(taxon in reference_taxa.streams)
 write.table(predicted_probs.streams.systemA_model, "results/predicted_probs.streams.systemA.txt", sep="\t", dec=",", col.names=NA)
 write.table(varimp.streams.systemA_model, "results/varimp.streams.systemA.txt", sep="\t", dec=",", col.names=NA)
 
-# Model 3 - streams Drakare
+# Model#6 Streams Drakare ---------------------------------------------------
+
 preds<-c("LN", "altitude","catch_area.m2.", "slope")
 
 
@@ -165,11 +169,10 @@ write.table(varimp.streams.Drakare_model, "results/varimp.streams.Drakare_model.
 
 
 
-# Types _______________________________________________________________________________________________________________________________
+# Types ---------------------------------------------------
 
-# Lakes  ----------------------------------  ----------------------------------  ----------------------------------  
+# Types Lakes SysA ---------------------------------------------------
 
-#SystemA lakes
 
 #Empty matrix for probabilties 
 predicted_probs.lakes.systemA_typology<-matrix(data = NA, nrow = nrow(taxa.lakes), ncol = length(reference_taxa.lakes))
@@ -188,7 +191,7 @@ for(site in rownames(taxa.lakes.pa))
 
 write.table(predicted_probs.lakes.systemA_typology, "results/predicted_probs.lakes.systemA_typology.txt", sep="\t", dec=",", col.names=NA)
 
-#Drakare lakes
+# Types lakes Drakare ---------------------------------------------------
 
 #Empty matrix for probabilties 
 predicted_probs.lakes.Drakare_typology<-matrix(data = NA, nrow = nrow(taxa.lakes), ncol = length(reference_taxa.lakes))
@@ -207,9 +210,8 @@ for(site in rownames(taxa.lakes.pa))
 write.table(predicted_probs.lakes.Drakare_typology, "results/predicted_probs.lakes.Drakare_typology.txt", sep="\t", dec=",", col.names=NA)
 
 
-# Streams  ----------------------------------  ----------------------------------  ----------------------------------  
+# Types streans SysA ---------------------------------------------------
 
-#SystemA streams
 
 #Empty matrix for probabilties 
 predicted_probs.streams.systemA_typology<-matrix(data = NA, nrow = nrow(taxa.streams), ncol = length(reference_taxa.streams))
@@ -228,7 +230,8 @@ for(site in rownames(taxa.streams.pa))
 
 write.table(predicted_probs.streams.systemA_typology, "results/predicted_probs.streams.systemA_typology.txt", sep="\t", dec=",", col.names=NA)
 
-#Drakare streams
+# Types streans Drakare ---------------------------------------------------
+
 
 #Empty matrix for probabilties 
 predicted_probs.streams.Drakare_typology<-matrix(data = NA, nrow = nrow(taxa.streams), ncol = length(reference_taxa.streams))
@@ -248,15 +251,14 @@ write.table(predicted_probs.streams.Drakare_typology, "results/predicted_probs.s
 
 
 
-# Null model _______________________________________________________________________________________________________________________________
+# null model lakes ---------------------------------------------------
 
-# Lakes  ----------------------------------  ----------------------------------  ----------------------------------  
 predicted_probs.lakes.null<-t(replicate(nrow(taxa.lakes.pa), (colSums(taxa.lakes.pa[calib.lakes,reference_taxa.lakes])/length(calib.lakes))))
 rownames(predicted_probs.lakes.null)<-rownames(taxa.lakes.pa)
 write.table(predicted_probs.lakes.null, "results/predicted_probs.lakes.null.txt", sep="\t", dec=",", col.names=NA)
 
 
-# Streams  ----------------------------------  ----------------------------------  ----------------------------------  
+# null model streams ---------------------------------------------------
 predicted_probs.streams.null<-t(replicate(nrow(taxa.streams.pa), (colSums(taxa.streams.pa[calib.streams,reference_taxa.streams])/length(calib.streams))))
 rownames(predicted_probs.streams.null)<-rownames(taxa.streams.pa)
 write.table(predicted_probs.streams.null, "results/predicted_probs.streams.null.txt", sep="\t", dec=",", col.names=NA)
