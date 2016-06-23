@@ -2,11 +2,22 @@
 setwd("C:/Users/simonh/OneDrive/SLU/WATERSv2/delprojekt/20160405 Uncertainty in establishment of ref cond/Unc_refcond")
 load("results/workspace.RData")
 
+
+
+#4 plots in one
+windows(1000,1000)
+bp.labels<-c("Model (all)", "Model (SysA)", "Model (SysB)", "typology (SysA)","Typology (SysB)", "null model")
+par(mfrow=c(2,2),mar=c(7,2,4,2),oma=c(2,3,0,0), cex.lab=0.8, cex.axis=1.2, adj=0, las=2)
+boxplot(AUC_taxa.lakes, names=bp.labels, );title("(a) AUC per taxon validation lakes", line = 0.5)
+boxplot(AUC_taxa.streams, names=bp.labels, );title("(b) AUC per taxon validation streams", line = 0.5)
+boxplot(metrics_lakes[valid.lakes,,'BC'],names=bp.labels);title("(c) BC validation lakes", line = 0.5)
+boxplot(metrics_streams[valid.streams,,'BC'],names=bp.labels);title("(d) BC validation streams", line = 0.5)
+
+savePlot("clipboard", type="wmf")
+
+
 # AUC per taxon -----------------------------------------------------------
 
-AUC_taxa.lakes
-
-AUC_taxa.streams
 
 windows(500,1000)
 bp.labels<-c("Model (all)", "Model (SysA)", "Model (SysB)", "typology (SysA)","Typology (SysB)", "null model")
@@ -38,6 +49,16 @@ boxplot(metrics_streams[valid.streams,,'AUC'], names=bp.labels);title("(d) AUC",
 savePlot("clipboard", type="wmf")
 
 
+# Only 2 metrics, lakes and streams in the same figure
+windows(1000,1000)
+bp.labels<-c("Model (all)", "Model (SysA)", "Model (SysB)", "typology (SysA)","Typology (SysB)", "null model")
+par(mfrow=c(2,2),mar=c(6,2,4,2),oma=c(5,3,0,0), cex.lab=0.8, cex.axis=1.2, adj=0, las=2)
+boxplot(metrics_lakes[valid.lakes,,'OE25'], names=bp.labels, );title("(a) validation lakes O/E", line = 0.5)
+boxplot(metrics_lakes[valid.lakes,,'BC'],names=bp.labels);title("(b) validation lakes BC", line = 0.5)
+boxplot(metrics_streams[valid.streams,,'OE25'],names=bp.labels);title("(c) validation streams O/E", line = 0.5)
+boxplot(metrics_streams[valid.streams,,'BC'], names=bp.labels);title("(d) validation streams BC", line = 0.5)
+savePlot("clipboard", type="wmf")
+
 
 
 
@@ -62,7 +83,6 @@ write.table(streams.metrics.sd, "results/streams.metrics.sd.txt", sep="\t", dec=
 
 
 # uncert boxplots ------------------------------------------------------------------
-#CV <- function(mean, sd){  (sd/mean)*100}
 CV <- function(x) {100*(sqrt(var(x))/mean(x))}
 
 
@@ -71,19 +91,24 @@ status.lakes.sorted<-status.lakes[order(status.lakes[,1]),];rownames(status.lake
 #summary(rownames(metrics_lakes[,,'AUC'])==rownames(status.lakes.sorted))
 metrics_lakes.stacked.all<-cbind(metrics_lakes.stacked.all,rep(status.lakes.sorted[,'status'], 30))
 colnames(metrics_lakes.stacked.all)<-c("id", "model","metric","data", "status")
-metrics_lakes.SD_across_model<-aggregate(data~id+status+metric, metrics_lakes.stacked.all, sd)
-metrics_lakes.CV_across_model<-aggregate(data~id+status+metric, metrics_lakes.stacked.all, CV)
-
-
+metrics_lakes.SD_across_model<-aggregate(data~id+status+metric, metrics_lakes.stacked.all[metrics_lakes.stacked.all[,'model']!='lakes.null',], sd)
+metrics_lakes.CV_across_model<-aggregate(data~id+status+metric, metrics_lakes.stacked.all[metrics_lakes.stacked.all[,'model']!='lakes.null',], CV)
 
 metrics_streams.stacked.all<-as.data.frame.table(metrics_streams[,,])
 status.streams.sorted<-status.streams[order(as.numeric(status.streams[,1])),];rownames(status.streams.sorted)<-status.streams.sorted[,1]
 #summary(rownames(metrics_streams[,,'AUC'])==rownames(status.streams.sorted))
 metrics_streams.stacked.all<-cbind(metrics_streams.stacked.all,rep(status.streams.sorted[,'status'], 30))
 colnames(metrics_streams.stacked.all)<-c("id", "model","metric","data", "status")
-metrics_streams.SD_across_model<-aggregate(data~id+status+metric, metrics_streams.stacked.all, sd)
-metrics_streams.CV_across_model<-aggregate(data~id+status+metric, metrics_streams.stacked.all, CV)
+metrics_streams.SD_across_model<-aggregate(data~id+status+metric, metrics_streams.stacked.all[metrics_streams.stacked.all[,'model']!='streams.null',], sd)
+metrics_streams.CV_across_model<-aggregate(data~id+status+metric, metrics_streams.stacked.all[metrics_streams.stacked.all[,'model']!='streams.null',], CV)
 
+#save stacked.all
+write.table(metrics_lakes.stacked.all, "results/metrics_lakes.stacked.all.txt", sep="\t", dec=",", col.names=NA)
+write.table(metrics_streams.stacked.all, "results/metrics_streams.stacked.all.txt", sep="\t", dec=",", col.names=NA)
+
+
+
+#all metrics
 windows(666,1000)
 par(mfrow=c(3,2),mar=c(2,2,4,2),oma=c(5,3,0,0), cex.lab=0.8, cex.axis=1.2, adj=0, las=2)
 boxplot(data~metric,data=metrics_lakes.CV_across_model[metrics_lakes.CV_across_model[,'status']=='calib',]);title("(a) calibration lakes", line = 0.5)
@@ -93,8 +118,25 @@ boxplot(data~metric,data=metrics_streams.CV_across_model[metrics_streams.CV_acro
 boxplot(data~metric,data=metrics_lakes.CV_across_model[metrics_lakes.CV_across_model[,'status']=='impacted',]);title("(e) non-reference lakes", line = 0.5)
 boxplot(data~metric,data=metrics_streams.CV_across_model[metrics_streams.CV_across_model[,'status']=='impacted',]);title("(f) non-reference streams", line = 0.5)
 savePlot("clipboard", type="wmf")
+
+
          
-         
+# BC and OE25
+
+metrics_lakes.CV_across_model$status <- ordered(metrics_lakes.CV_across_model$status, levels=c("calib", "valid", "impacted"))
+levels(metrics_lakes.CV_across_model$status)<-c("calibration", "validation", "impacted")
+
+windows(1000,1000)
+par(mfrow=c(2,2),mar=c(4,2,4,2),oma=c(5,3,0,0), cex.lab=1, cex.axis=1.2, adj=0, las=2)
+boxplot(data~status,data=metrics_lakes.CV_across_model[metrics_lakes.CV_across_model[,'metric']=='OE25',]);title("(a) lakes O/E", line = 0.5)
+boxplot(data~status,data=metrics_lakes.CV_across_model[metrics_lakes.CV_across_model[,'metric']=='BC',]);title("(b) lakes BC", line = 0.5)
+boxplot(data~status,data=metrics_lakes.CV_across_model[metrics_lakes.CV_across_model[,'metric']=='OE25',]);title("(c) streams O/E", line = 0.5)
+boxplot(data~status,data=metrics_lakes.CV_across_model[metrics_lakes.CV_across_model[,'metric']=='BC',]);title("(d) streams BC", line = 0.5)
+savePlot("clipboard", type="wmf")
+
+
+
+
 
 # tables for unc ----------------------------------------------------------
 lakes.unc.mean<-aggregate(data~metric+status, metrics_lakes.CV_across_model, mean)
@@ -130,11 +172,12 @@ varimp.streams.Drakare_model.rel<-data.frame(varimp.streams.Drakare_model.rel, l
 all.relvarimp<-rbind(varimp.lakes.all.rel,varimp.lakes.systemA_model.rel,varimp.lakes.Drakare_model.rel,varimp.streams.all.rel,varimp.streams.systemA_model.rel,varimp.streams.Drakare_model.rel)
 colnames(all.relvarimp)[1:3]<-c("taxa", "predictor", "Relative.importance")
 
+all.relvarimp[which(is.na(all.relvarimp[,'Relative.importance'])),'Relative.importance']<-0
 all.relvarimp[all.relvarimp[,'Relative.importance']>1,'Relative.importance']<-0
 all.relvarimp[all.relvarimp[,'Relative.importance']<0,'Relative.importance']<-0
 
 
-write.table(all.relvarimp, "results/all.relvarimp.txt", sep="\t", dec=",", col.names=NA, fileEncoding="UTF-8")
+write.table(all.relvarimp, "results/all.relvarimp.txt", sep="\t", dec=",", col.names=NA)
 
 
 all.relvarimp.mean<-aggregate(Relative.importance~predictor+model+lake_stream, all.relvarimp, mean)

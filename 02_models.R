@@ -230,7 +230,7 @@ for(site in rownames(taxa.streams.pa))
 
 write.table(predicted_probs.streams.systemA_typology, "results/predicted_probs.streams.systemA_typology.txt", sep="\t", dec=",", col.names=NA)
 
-# Types streans Drakare ---------------------------------------------------
+# Types streams Drakare ---------------------------------------------------
 
 
 #Empty matrix for probabilties 
